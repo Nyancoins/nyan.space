@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Nyancoin peers{% endblock %}
+
+{% macro activity(peer) %}
+	{% set time = peer.lastsend %}
+	{% if peer.lastrecv > time %}
+		{% set time = peer.lastrecv %}
+	{% endif %}
+	{{time|timeago}}
+{% endmacro %}
+
+{% macro addnodes(peers) -%}
+	{% for p in peers.result -%}{% if p.inbound == false %}
+addnode={{p.addr}}
+{% endif %}{% endfor %}
+{%- endmacro %}
+
+{% block body %}
+<h1 class="pull-left">{{block('title')}}</h1><small class="pull-right" style="font-size:x-small;">cached {{peers.cached|timeago}}</small>
+<table class="table table-condensed">
+  <tr>
+    <th>Address</th>
+    <th>Last Activity</th>
+	<th>Connected since</th>
+	<th>Version</th>
+    </th>
+  </tr>
+  {% for p in peers.result %}
+  {% if p.inbound == false %} {# Hide inbound peers, they show up with their unique client port for that connection (which nobody will be able to connect to) #}
+  <tr>
+    <td>{{p.addr}}</td>
+    <td>{{ _self.activity(p) }}</td>
+	<td>{{p.conntime|timeago}}</td>
+	<td>{{p.subver}}</td>
+  </tr>
+  {% endif %}
+  {% endfor %}
+</table>
+
+<h3>Addnodes <small>(add this to your nyancoin.conf)</small></h3>
+<pre style="text-align:left;">addnode=91.121.146.85:33701
+{{_self.addnodes(peers)}}</pre>
+{# <pre style="text-align:left;">{{debug}}</pre> #}
+{% endblock %}
