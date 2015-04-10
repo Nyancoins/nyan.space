@@ -98,3 +98,4 @@ function getPeers() {
 
 // render
 echo $twig->render('peers.html', array('peers' => getPeers(), 'debug' => json_encode(getPeers())));
+$mc->quit();
