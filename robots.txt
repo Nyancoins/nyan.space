@@ -1,0 +1,11 @@
+User-agent: *
+Disallow: /
+
+User-agent: CloudFlare
+Disallow: /b
+
+User-agent: ia_archiver
+Disallow: /b
+
+User-agent: GoogleBot
+Disallow: /b
