@@ -1,7 +1,8 @@
 <?php
+require_once('peers.inc.php');
 
 // nyancoind rpc auth
-$auth = array('nyancoinrpc', 'password');
+$auth = array(RPCUSER, RPCPASS);
 
 // memcache
 $mc = new Memcached("nyan.space.peers");
@@ -13,7 +14,7 @@ Twig_Autoloader::register();
 $loader = new Twig_Loader_Filesystem('tpl');
 $twig = new Twig_Environment($loader, array(
 	'cache' => 'tpl_c',
-	'debug' => FALSE,
+	'debug' => TRUE,
 ));
 $twig->addFilter(new Twig_SimpleFilter('timeago', function ($datetime) {
 
@@ -38,6 +39,15 @@ $twig->addFilter(new Twig_SimpleFilter('timeago', function ($datetime) {
   }
 
 })); // thanks http://stackoverflow.com/a/26311354
+
+$twig->addFilter(new Twig_SimpleFilter('fixport', function ($txt) {
+	$p = explode(':', $txt);
+	if(count($p) != 2) {
+		return $txt;
+	}
+	
+	return $p[0] . ':33701'; // all Nyancoin wallets listen on 33701 by default, this isn't the best solution for inbound connections but it'll have to do
+}));
 
 // json-rpc
 require_once('lib/Requests.php');

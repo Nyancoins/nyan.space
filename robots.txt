@@ -9,3 +9,9 @@ Disallow: /b
 
 User-agent: GoogleBot
 Disallow: /b
+
+User-agent: GoogleBot
+Disallow: /m
+
+User-agent: GoogleBot
+Disallow: /mobile

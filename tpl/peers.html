@@ -10,9 +10,9 @@
 {% endmacro %}
 
 {% macro addnodes(peers) -%}
-	{% for p in peers.result -%}{% if p.inbound == false %}
-addnode={{p.addr}}
-{% endif %}{% endfor %}
+	{% for p in peers.result -%}
+addnode={{p.addr|fixport}}
+{% endfor %}
 {%- endmacro %}
 
 {% block body %}
@@ -26,14 +26,12 @@ addnode={{p.addr}}
     </th>
   </tr>
   {% for p in peers.result %}
-  {% if p.inbound == false %} {# Hide inbound peers, they show up with their unique client port for that connection (which nobody will be able to connect to) #}
   <tr>
-    <td>{{p.addr}}</td>
+    <td>{{p.addr|fixport}}</td>
     <td>{{ _self.activity(p) }}</td>
 	<td>{{p.conntime|timeago}}</td>
 	<td>{{p.subver}}</td>
   </tr>
-  {% endif %}
   {% endfor %}
 </table>
 
