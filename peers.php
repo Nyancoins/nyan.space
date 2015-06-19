@@ -82,7 +82,7 @@ function getPeers() {
 	}
 	
 	$now = time();
-	$ttl = 60*3; // 3 minute ttl
+	$ttl = 60*1; // 1 minute ttl
 	$ts = $mc->get('ts');
 	$cached = $ts-$ttl;
 	if($ts <= $now) { 
