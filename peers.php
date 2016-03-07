@@ -4,9 +4,6 @@ require_once('peers.inc.php');
 // nyancoind rpc auth
 $auth = array(RPCUSER, RPCPASS);
 
-// memcache
-$mc = new Memcached("nyan.space.peers");
-$mc->addServer('127.0.0.1', 11211);
 
 // templates
 require_once('lib/Twig/Autoloader.php');
@@ -14,7 +11,7 @@ Twig_Autoloader::register();
 $loader = new Twig_Loader_Filesystem('tpl');
 $twig = new Twig_Environment($loader, array(
 	'cache' => 'tpl_c',
-	'debug' => TRUE,
+	'debug' => FALSE,
 ));
 $twig->addFilter(new Twig_SimpleFilter('timeago', function ($datetime) {
 
@@ -73,9 +70,8 @@ function do_json($data) {
 
 // functions
 function getPeers() {
-	global $mc;
 	
-	$r = $mc->get('peers');
+	$r = apcu_fetch('peers');
 	if ($r === FALSE) {
 		// no cached peers yet
 		$r = array();
@@ -83,7 +79,7 @@ function getPeers() {
 	
 	$now = time();
 	$ttl = 60*1; // 1 minute ttl
-	$ts = $mc->get('ts');
+	$ts = apcu_fetch('ts');
 	$cached = $ts-$ttl;
 	if($ts <= $now) { 
 		// ttl expired, update
@@ -94,13 +90,13 @@ function getPeers() {
 		if ($resp->success) {
 			// Success
 			$r = json_decode($resp->body, TRUE);
-			$mc->set('peers', $r);
+			apcu_store('peers', $r, $ttl);
 			$cached = $now-1;
 		} else {
 			// Failure
 			$ttl = 5; // try again in 5 seconds
 		}
-		$mc->set('ts', $now + $ttl); 
+		apcu_store('ts', $now + $ttl); 
 	}
 	
 	return array_merge($r, array('cached' => $cached));
@@ -108,4 +104,3 @@ function getPeers() {
 
 // render
 echo $twig->render('peers.html', array('peers' => getPeers(), 'debug' => json_encode(getPeers())));
-$mc->quit();
