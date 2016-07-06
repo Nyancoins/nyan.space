@@ -14,4 +14,7 @@ User-agent: GoogleBot
 Disallow: /m
 
 User-agent: GoogleBot
+Disallow: /rawtx
+
+User-agent: GoogleBot
 Disallow: /mobile
