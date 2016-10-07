@@ -8,7 +8,7 @@ $auth = array(RPCUSER, RPCPASS);
 require_once('lib/Requests.php');
 Requests::register_autoloader();
 
-$url = "http://127.0.0.1:33700";
+$url = RPCURL;	// 'http://127.0.0.1:37000'
 $headers = array('Content-Type' => 'application/json');
 $jsonRequest = array(
 	"jsonrpc" => "1.0",
