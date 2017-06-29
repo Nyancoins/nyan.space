@@ -11,7 +11,7 @@
 
 {% macro addnodes(peers) -%}
 	{% for p in peers.result -%}
-addnode={{p.addr|fixport}}
+addnode={{p.addr}}
 {% endfor %}
 {%- endmacro %}
 
@@ -27,7 +27,7 @@ addnode={{p.addr|fixport}}
   </tr>
   {% for p in peers.result %}
   <tr>
-    <td>{{p.addr|fixport}}</td>
+    <td>{{p.addr}}</td>
     <td>{{ _self.activity(p) }}</td>
 	<td>{{p.conntime|timeago}}</td>
 	<td>{{p.subver}}</td>
